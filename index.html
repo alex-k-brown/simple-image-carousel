@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Carousel</title>
+	<style type="text/css" media="screen">
+		@keyframes fadeIn {
+			0% { opacity: 0; }
+			100% { opacity:  1; }
+		}
+		.zj-carousel .zj-arrow {
+			color: #ff8400;
+			cursor: pointer;
+			font-family: sans-serif;
+			font-size: 112px;
+			font-weight: bold;
+			padding: 20px;
+			text-shadow: 2px 2px 6px rgba(0,0,0,.3);
+			-webkit-touch-callout: none;
+		    -webkit-user-select: none;
+		    -khtml-user-select: none;
+		    -moz-user-select: none;
+		    -ms-user-select: none;
+		    user-select: none;
+		}
+		.zj-carousel .zj-arrow:selection {
+		    color: none;
+		    background: none;
+		}
+		.zj-carousel .zj-arrow:-moz-selection {
+		    color: none;
+		    background: none;
+		}
+		.zj-carousel .zj-arrow:focus {
+		  outline: none;
+		  box-shadow: none;
+		}
+		.zj-carousel .zj-arrows {
+			display: none;
+			justify-content: space-between;
+			position: absolute;
+			top: 50%;
+			transform: translateY(-50%);
+			width: 100%;
+			z-index: 2;
+		}
+		.zj-carousel .zj-gallery-image {
+			animation:  fadeIn .75s ease-out 0s forwards;
+			display:  none;
+			height: auto;
+			opacity:  0;
+			position: absolute;
+			top: 0;
+			width: 100%;
+		}
+		.zj-carousel .zj-gallery-image.zj-active {
+			display:  block;
+		}
+		.zj-carousel .zj-show {
+			display: flex;
+		}
+		@media only screen and (max-width: 767px) {
+			.zj-carousel .zj-arrow {
+				font-size: 64px;
+				padding: 10px;
+			}
+		}
+	</style>
+</head>
+<body>
+	<div id="zj-carousel" class="zj-carousel">
+		<div id="zj-arrows" class="zj-arrows">
+			<div id="zj-previous" class="zj-arrow zj-previous">‹</div>
+			<div id="zj-next" class="zj-arrow zj-next">›</div>
+		</div>
+	</div>
+</body>
+<script type="text/javascript" charset="utf-8" async defer>
+	var acf = [
+		"https://i.ytimg.com/vi/MPV2METPeJU/maxresdefault.jpg",
+		"https://s3.amazonaws.com/cdn-origin-etr.akc.org/wp-content/uploads/2017/11/12234558/Chinook-On-White-03.jpg"
+	];
+
+	if (typeof acf[1] !== 'undefined') {
+		if (acf[1] != '') {
+			document.getElementById('zj-arrows').classList.add('zj-show');
+		};
+	};
+
+	function appendImage(acf) {
+		acf.forEach(function(image, n) {
+			var imgEl = document.createElement("IMG");
+			imgEl.src = image;
+			imgEl.classList.add('zj-gallery-image');
+			imgEl.id = `zj-gallery-image-${n}`;
+			document.getElementById('zj-carousel').appendChild(imgEl);
+			if (n === 0) {
+				imgEl.classList.add('zj-active');
+			}
+		})
+	};
+
+	appendImage(acf);
+
+	function imageChange() {
+		var activeImg = document.getElementsByClassName('zj-active')[0];
+		activeImg.classList.remove('zj-active');
+		if (activeImg.id === 'zj-gallery-image-0') {
+			document.getElementById('zj-gallery-image-1').classList.add('zj-active');
+		} else {
+			document.getElementById('zj-gallery-image-0').classList.add('zj-active');
+		}
+	};
+
+	var swipeStart;
+
+	function touchStart(e) {
+		swipeStart = e.touches[0].pageX;
+	};
+	function touchEnd(e) {
+		var swipeEnd = e.changedTouches[0].pageX;
+		var swipeChange = (Math.abs(swipeEnd - swipeStart));
+		if (swipeChange > 50) {
+			imageChange();
+		};
+	};
+
+	document.getElementById('zj-next').addEventListener('click', imageChange);
+	document.getElementById('zj-previous').addEventListener('click', imageChange);
+
+	if (typeof acf[1] !== 'undefined') {
+		if(acf[1] != '') {
+			document.getElementById('zj-carousel').addEventListener('touchstart', touchStart);
+			document.getElementById('zj-carousel').addEventListener('touchend', touchEnd);
+		}
+	}
+</script>
+</html>
